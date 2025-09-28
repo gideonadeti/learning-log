@@ -1,10 +1,93 @@
-{% extends 'learning_logs/base.html' %} {% load django_bootstrap5 %} 
+{% extends 'learning_logs/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}Log In - Learning Log{% endblock %}
+
 {% block page_header %}
-<h2>Log in to your account.</h2>
-{% endblock page_header %} {% block content %}
+<div class="text-center">
+  <h1 class="h2 mb-1">🔑 Welcome Back</h1>
+  <p class="text-muted mb-0">Sign in to continue your learning journey</p>
+</div>
+{% endblock page_header %}
 
-<form action="{% url 'accounts:login' %}" method="post">
-  {% csrf_token %} {% bootstrap_form form %} {% bootstrap_button button_type="submit" content="Log in" %}
-</form>
-
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white text-center">
+        <h5 class="card-title mb-0 d-flex align-items-center justify-content-center">
+          <span class="me-2">📚</span>
+          Learning Log
+        </h5>
+      </div>
+      <div class="card-body p-4">
+        <form action="{% url 'accounts:login' %}" method="post" novalidate>
+          {% csrf_token %}
+          
+          <div class="mb-3">
+            <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">
+              <span class="me-2">👤</span>
+              Username
+            </label>
+            {{ form.username }}
+            {% if form.username.errors %}
+              <div class="invalid-feedback d-block">
+                {% for error in form.username.errors %}
+                  <div>{{ error }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          
+          <div class="mb-4">
+            <label for="{{ form.password.id_for_label }}" class="form-label fw-semibold">
+              <span class="me-2">🔒</span>
+              Password
+            </label>
+            {{ form.password }}
+            {% if form.password.errors %}
+              <div class="invalid-feedback d-block">
+                {% for error in form.password.errors %}
+                  <div>{{ error }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+              {% for error in form.non_field_errors %}
+                <div>{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">
+              <span class="me-2">🚀</span>
+              Sign In
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer bg-transparent text-center">
+        <p class="mb-0 text-muted">
+          Don't have an account? 
+          <a href="{% url 'accounts:register' %}" class="text-decoration-none fw-semibold">
+            Create one here
+          </a>
+        </p>
+      </div>
+    </div>
+    
+    <div class="card mt-4">
+      <div class="card-body text-center">
+        <h6 class="card-title">🎯 Why Learning Log?</h6>
+        <p class="card-text small text-muted mb-0">
+          Track your learning progress, organize your knowledge, and build your personal learning library.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}
