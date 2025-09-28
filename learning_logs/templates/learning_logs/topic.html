@@ -1,25 +1,151 @@
-{% extends 'learning_logs/base.html' %} {% block page_header %}
-<h1>{{ topic.text }}</h1>
-{% endblock page_header %} {% block content %}
+{% extends 'learning_logs/base.html' %}
 
-<p>
-  <a href="{% url 'learning_logs:new_entry' topic.id %}">Add new entry</a>
-</p>
+{% block title %}{{ topic.text }} - Learning Log{% endblock %}
 
-{% for entry in entries %}
-<div class="card mb-3">
-  <!-- Card header with timestamp and edit link -->
-  <h4 class="card-header">
-    {{ entry.date_added|date:'M d, Y H:i' }}
-    <small
-      ><a href="{% url 'learning_logs:edit_entry' entry.id %}">
-        edit entry</a
-      ></small
-    >
-  </h4>
-  <!-- Card body with entry text -->
-  <div class="card-body">{{ entry.text|linebreaks }}</div>
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center">
+  <div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item">
+          <a href="{% url 'learning_logs:topics' %}" class="text-decoration-none">📋 Topics</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{ topic.text }}</li>
+      </ol>
+    </nav>
+    <h1 class="h2 mb-1">📚 {{ topic.text }}</h1>
+    <p class="text-muted mb-0">
+      {% if entries %}
+        {{ entries|length }} entr{{ entries|length|pluralize:"y,ies" }} in this topic
+      {% else %}
+        No entries yet - start documenting your learning
+      {% endif %}
+    </p>
+  </div>
+  <a href="{% url 'learning_logs:new_entry' topic.id %}" class="btn btn-primary d-flex align-items-center">
+    <span class="me-2">✍️</span>
+    Add Entry
+  </a>
 </div>
-{% empty %}
-<p>There are no entries for this topic yet.</p>
-{% endfor %} {% endblock content %}
+{% endblock page_header %}
+
+{% block content %}
+{% if entries %}
+  <div class="row">
+    <div class="col-lg-8">
+      {% for entry in entries %}
+      <div class="card mb-4 entry-card">
+        <div class="card-header bg-transparent border-0 pb-0">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="entry-date">
+              <span class="me-2">📅</span>
+              {{ entry.date_added|date:'F d, Y' }}
+              <small class="text-muted ms-2">{{ entry.date_added|date:'g:i A' }}</small>
+            </div>
+            <a href="{% url 'learning_logs:edit_entry' entry.id %}" class="edit-link text-decoration-none">
+              <span class="me-1">✏️</span>
+              Edit
+            </a>
+          </div>
+        </div>
+        <div class="card-body pt-2">
+          <div class="entry-content">
+            {{ entry.text|linebreaks }}
+          </div>
+        </div>
+        <div class="card-footer bg-transparent border-0 pt-0">
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+              <span class="me-3">📝</span>
+              Entry #{{ forloop.revcounter }}
+            </small>
+            <small class="text-muted">
+              {{ entry.text|wordcount }} words
+            </small>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">📊 Topic Statistics</h5>
+        </div>
+        <div class="card-body">
+          <div class="row text-center mb-3">
+            <div class="col-6">
+              <div class="h4 mb-0 text-primary">{{ entries|length }}</div>
+              <small class="text-muted">Total Entries</small>
+            </div>
+            <div class="col-6">
+              <div class="h4 mb-0 text-success">
+                {% if entries %}
+                  {% for entry in entries %}
+                    {% if forloop.last %}
+                      {{ entries.0.date_added|timesince:entry.date_added }}
+                    {% endif %}
+                  {% endfor %}
+                {% else %}
+                  -
+                {% endif %}
+              </div>
+              <small class="text-muted">Learning Span</small>
+            </div>
+          </div>
+          
+          <div class="d-grid gap-2">
+            <a href="{% url 'learning_logs:new_entry' topic.id %}" class="btn btn-primary btn-sm">
+              <span class="me-2">➕</span>
+              Add New Entry
+            </a>
+            <a href="{% url 'learning_logs:topics' %}" class="btn btn-outline-secondary btn-sm">
+              <span class="me-2">📋</span>
+              Back to Topics
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      {% if entries|length > 1 %}
+      <div class="card mt-3">
+        <div class="card-header">
+          <h6 class="card-title mb-0">📈 Recent Activity</h6>
+        </div>
+        <div class="card-body">
+          <div class="timeline">
+            {% for entry in entries|slice:":5" %}
+            <div class="timeline-item mb-2">
+              <div class="d-flex align-items-center">
+                <div class="timeline-marker me-2" style="width: 8px; height: 8px; background-color: var(--primary-color); border-radius: 50%;"></div>
+                <div class="flex-grow-1">
+                  <small class="text-muted">{{ entry.date_added|date:"M d" }}</small>
+                  <div class="small">{{ entry.text|truncatewords:8 }}</div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+{% else %}
+  <div class="empty-state">
+    <div class="mb-4">
+      <div style="font-size: 5rem; opacity: 0.3;">📝</div>
+    </div>
+    <h3 class="h4 mb-3">No entries yet</h3>
+    <p class="text-muted mb-4">
+      Start documenting your learning journey for <strong>{{ topic.text }}</strong>. 
+      Add your first entry to capture insights, notes, and progress.
+    </p>
+    <a href="{% url 'learning_logs:new_entry' topic.id %}" class="btn btn-primary btn-lg">
+      <span class="me-2">✍️</span>
+      Write Your First Entry
+    </a>
+  </div>
+{% endif %}
+{% endblock content %}
