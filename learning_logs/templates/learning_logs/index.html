@@ -1,17 +1,104 @@
-{% extends 'learning_logs/base.html' %} {% block page_header %}
-<div class="p-3 mb-4 bg-light border rounded-3">
-  <div class="container-fluid py-4">
-    <h1 class="display-3">Track your learning.</h1>
+{% extends 'learning_logs/base.html' %}
 
-    <p class="lead">
-      Make your own Learning Log, and keep a list of the topics you're learning
-      about. Whenever you learn something new about a topic, make an entry
-      summarizing what you've learned.
-    </p>
+{% block title %}Learning Log - Track Your Learning Journey{% endblock %}
 
-    <a class="btn btn-primary btn-lg mt-1" href="{% url 'accounts:register' %}"
-      >Register &raquo;</a
-    >
+{% block page_header %}
+<div class="hero-section p-4 mb-5">
+  <div class="container-fluid py-5">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <h1 class="display-4 fw-bold mb-4">
+          📚 Track Your Learning Journey
+        </h1>
+        <p class="lead mb-4">
+          Transform your learning experience with a personalized knowledge management system. 
+          Create topics, document insights, and build your own digital learning library.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          {% if user.is_authenticated %}
+            <a class="btn btn-light btn-lg px-4" href="{% url 'learning_logs:topics' %}">
+              <span class="me-2">📋</span>
+              View My Topics
+            </a>
+            <a class="btn btn-outline-light btn-lg px-4" href="{% url 'learning_logs:new_topic' %}">
+              <span class="me-2">➕</span>
+              Add New Topic
+            </a>
+          {% else %}
+            <a class="btn btn-light btn-lg px-4" href="{% url 'accounts:register' %}">
+              <span class="me-2">🚀</span>
+              Get Started Free
+            </a>
+            <a class="btn btn-outline-light btn-lg px-4" href="{% url 'accounts:login' %}">
+              <span class="me-2">🔑</span>
+              Sign In
+            </a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-lg-4 text-center">
+        <div class="hero-icon" style="font-size: 8rem; opacity: 0.8;">
+          📖
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock page_header %}
+
+{% block content %}
+<div class="row">
+  <div class="col-lg-4 mb-4">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body text-center p-4">
+        <div class="feature-icon mb-3" style="font-size: 3rem;">📝</div>
+        <h3 class="card-title h5">Organize Topics</h3>
+        <p class="card-text text-muted">
+          Create and manage learning topics that matter to you. Keep everything organized and easily accessible.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 mb-4">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body text-center p-4">
+        <div class="feature-icon mb-3" style="font-size: 3rem;">💡</div>
+        <h3 class="card-title h5">Document Insights</h3>
+        <p class="card-text text-muted">
+          Record your learning progress with detailed entries. Capture key insights and track your knowledge growth.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 mb-4">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body text-center p-4">
+        <div class="feature-icon mb-3" style="font-size: 3rem;">📈</div>
+        <h3 class="card-title h5">Track Progress</h3>
+        <p class="card-text text-muted">
+          Monitor your learning journey over time. See how your knowledge evolves and grows with each entry.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if not user.is_authenticated %}
+<div class="row mt-5">
+  <div class="col-12">
+    <div class="card border-primary">
+      <div class="card-body text-center p-5">
+        <h2 class="card-title h4 mb-3">Ready to Start Learning?</h2>
+        <p class="card-text text-muted mb-4">
+          Join thousands of learners who are already tracking their knowledge journey.
+        </p>
+        <a class="btn btn-primary btn-lg px-5" href="{% url 'accounts:register' %}">
+          <span class="me-2">🎯</span>
+          Create Your Learning Log
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock content %}
