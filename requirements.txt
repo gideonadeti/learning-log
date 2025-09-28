@@ -1,5 +1,6 @@
 asgiref==3.9.2
 autopep8==2.3.2
+Brotli==1.1.0
 dj-database-url==3.0.1
 Django==5.2.6
 django-bootstrap5==25.2
@@ -7,3 +8,4 @@ platformshconfig==2.4.0
 psycopg2-binary==2.9.10
 pycodestyle==2.14.0
 sqlparse==0.5.3
+whitenoise==6.11.0
