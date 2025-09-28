@@ -24,7 +24,13 @@ def topics(request):
     """Show all topics."""
 
     topics = Topic.objects.filter(owner=request.user).order_by("date_added")
-    context = {"topics": topics}
+    total_entries = sum(topic.entry_set.count() for topic in topics)
+    active_topics_count = sum(1 for topic in topics if topic.entry_set.count() > 0)
+    context = {
+        "topics": topics,
+        "total_entries": total_entries,
+        "active_topics_count": active_topics_count,
+    }
 
     return render(request, "learning_logs/topics.html", context)
 
