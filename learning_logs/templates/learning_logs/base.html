@@ -3,16 +3,167 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Learning Log</title>
+    <meta name="description" content="Track your learning journey with Learning Log - a personal knowledge management tool" />
+    <meta name="keywords" content="learning, education, knowledge, notes, tracking, personal development" />
+    <meta name="author" content="Gideon Adeti" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Learning Log - Track Your Learning Journey" />
+    <meta property="og:description" content="Make your own Learning Log and keep track of topics you're learning about" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Learning Log - Track Your Learning Journey" />
+    <meta property="twitter:description" content="Make your own Learning Log and keep track of topics you're learning about" />
+    
+    <title>{% block title %}Learning Log{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 
-    {% load django_bootstrap5 %} {% bootstrap_css %} {% bootstrap_javascript %}
+    {% load django_bootstrap5 %} 
+    {% bootstrap_css %} 
+    {% bootstrap_javascript %}
+    
+    <!-- Custom CSS -->
+    <style>
+      :root {
+        --primary-color: #0d6efd;
+        --secondary-color: #6c757d;
+        --success-color: #198754;
+        --info-color: #0dcaf0;
+        --warning-color: #ffc107;
+        --danger-color: #dc3545;
+        --light-color: #f8f9fa;
+        --dark-color: #212529;
+      }
+      
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+      }
+      
+      .navbar-brand {
+        font-weight: 600;
+        font-size: 1.5rem;
+      }
+      
+      .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        transition: box-shadow 0.15s ease-in-out;
+      }
+      
+      .card:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+      }
+      
+      .btn {
+        border-radius: 0.375rem;
+        font-weight: 500;
+        transition: all 0.15s ease-in-out;
+      }
+      
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+      
+      .list-group-item {
+        border-radius: 0.375rem !important;
+        margin-bottom: 0.5rem;
+        transition: all 0.15s ease-in-out;
+      }
+      
+      .list-group-item:hover {
+        background-color: var(--light-color);
+        transform: translateX(5px);
+      }
+      
+      .list-group-item a {
+        text-decoration: none;
+        color: var(--dark-color);
+        font-weight: 500;
+      }
+      
+      .list-group-item a:hover {
+        color: var(--primary-color);
+      }
+      
+      .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+      }
+      
+      .hero-section {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--info-color) 100%);
+        color: white;
+        border-radius: 1rem;
+      }
+      
+      .hero-section h1 {
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      
+      .hero-section .btn {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      
+      .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--secondary-color);
+      }
+      
+      .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+      }
+      
+      .entry-card {
+        border-left: 4px solid var(--primary-color);
+      }
+      
+      .entry-date {
+        color: var(--secondary-color);
+        font-size: 0.9rem;
+      }
+      
+      .edit-link {
+        font-size: 0.8rem;
+        opacity: 0.7;
+        transition: opacity 0.15s ease-in-out;
+      }
+      
+      .edit-link:hover {
+        opacity: 1;
+      }
+      
+      @media (max-width: 768px) {
+        .hero-section {
+          margin: 0 -15px;
+          border-radius: 0;
+        }
+        
+        .hero-section h1 {
+          font-size: 2rem;
+        }
+        
+        .list-group-item:hover {
+          transform: none;
+        }
+      }
+    </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-md navbar-light bg-light mb-4 border">
+    <nav class="navbar navbar-expand-md navbar-light bg-light mb-4 border" role="navigation" aria-label="Main navigation">
       <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'learning_logs:index' %}">
-          Learning Log</a
-        >
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'learning_logs:index' %}" aria-label="Learning Log Home">
+          <span class="me-2">📚</span>
+          Learning Log
+        </a>
 
         <button
           class="navbar-toggler"
@@ -21,7 +172,7 @@
           data-bs-target="#navbarCollapse"
           aria-controls="navbarCollapse"
           aria-expanded="false"
-          aria-label="Toggle navigation"
+          aria-label="Toggle navigation menu"
         >
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -29,9 +180,10 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav me-auto mb-2 mb-md-0">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'learning_logs:topics' %}">
-                Topics</a
-              >
+              <a class="nav-link d-flex align-items-center" href="{% url 'learning_logs:topics' %}" aria-label="View all topics">
+                <span class="me-1">📋</span>
+                Topics
+              </a>
             </li>
           </ul>
           <!-- End of links on left side of navbar -->
@@ -39,26 +191,34 @@
           <!-- Account-related links -->
           <ul class="navbar-nav ms-auto mb-2 mb-md-0">
             {% if user.is_authenticated %}
-            <li class="nav-item">
-              <span class="navbar-text me-2">Hello, {{ user.username }}. </span>
+            <li class="nav-item d-flex align-items-center">
+              <span class="navbar-text me-3">
+                <span class="me-1">👋</span>
+                Hello, <strong>{{ user.username }}</strong>
+              </span>
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'accounts:register' %}">
-                Register</a
-              >
+              <a class="nav-link d-flex align-items-center" href="{% url 'accounts:register' %}" aria-label="Create a new account">
+                <span class="me-1">✍️</span>
+                Register
+              </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'accounts:login' %}"> Log in</a>
+              <a class="nav-link d-flex align-items-center" href="{% url 'accounts:login' %}" aria-label="Log in to your account">
+                <span class="me-1">🔑</span>
+                Log in
+              </a>
             </li>
             {% endif %}
           </ul>
           <!-- End of account-related links -->
 
           {% if user.is_authenticated %}
-          <form action="{% url 'accounts:logout' %}" method="post">
+          <form action="{% url 'accounts:logout' %}" method="post" class="d-inline">
             {% csrf_token %}
-            <button name="submit" class="btn btn-outline-secondary btn-sm">
+            <button name="submit" class="btn btn-outline-secondary btn-sm d-flex align-items-center" aria-label="Log out of your account">
+              <span class="me-1">🚪</span>
               Log out
             </button>
           </form>
@@ -70,12 +230,36 @@
     </nav>
     <!-- End of navbar -->
 
-    <main class="container">
+    <main class="container" role="main">
       <div class="pb-2 mb-2 border-bottom">
         {% block page_header %}{% endblock page_header %}
       </div>
 
-      <div>{% block content %}{% endblock content %}</div>
+      <div class="content-wrapper">
+        {% block content %}{% endblock content %}
+      </div>
     </main>
+    
+    <!-- Footer -->
+    <footer class="bg-light text-center text-muted py-4 mt-5 border-top">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <p class="mb-0">&copy; 2025 Learning Log. Built with Django & Bootstrap.</p>
+          </div>
+          <div class="col-md-6">
+            <p class="mb-0">
+              <span class="me-3">📚</span>
+              Track your learning journey
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    
+    <!-- Skip to content link for accessibility -->
+    <a href="#main-content" class="visually-hidden-focusable btn btn-primary position-absolute" style="top: -40px; left: 6px; z-index: 1000;">
+      Skip to main content
+    </a>
   </body>
 </html>
